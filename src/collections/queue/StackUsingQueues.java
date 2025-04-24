@@ -4,35 +4,35 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 class StackUsingQueues {
-    private Queue<Integer> q1 = new LinkedList<>();
-    private Queue<Integer> q2 = new LinkedList<>();
+    private Queue<Integer> queueOne = new LinkedList<>();
+    private Queue<Integer> queueTwo = new LinkedList<>();
 
     public void push(int x) {
-        q2.add(x);
-        while (!q1.isEmpty()) {
-            q2.add(q1.remove());
+        queueTwo.add(x);
+        while (!queueOne.isEmpty()) {
+            queueTwo.add(queueOne.remove());
         }
-        Queue<Integer> temp = q1;
-        q1 = q2;
-        q2 = temp;
+        Queue<Integer> temp = queueOne;
+        queueOne = queueTwo;
+        queueTwo = temp;
     }
 
     public Integer pop() {
-        if (q1.isEmpty()) {
+        if (queueOne.isEmpty()) {
             return null;
         }
-        return q1.remove();
+        return queueOne.remove();
     }
 
     public Integer top() {
-        if (q1.isEmpty()) {
+        if (queueOne.isEmpty()) {
             return null;
         }
-        return q1.peek();
+        return queueOne.peek();
     }
 
     public boolean isEmpty() {
-        return q1.isEmpty();
+        return queueOne.isEmpty();
     }
 
     public static void main(String[] args) {
