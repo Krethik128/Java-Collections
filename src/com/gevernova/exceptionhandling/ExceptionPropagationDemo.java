@@ -8,13 +8,13 @@ public class ExceptionPropagationDemo {
     }
 
     // Calls methodOne (exception propagates)
-    public static void methofTwo() {
+    public static void methodTwo() {
         methodOne();
     }
 
     public static void main(String[] args) {
         try {
-            methofTwo();  // Exception handled here
+            methodTwo();  // Exception handled here
         } catch (ArithmeticException e) {
             System.out.println("Handled the exception in main method");
         } finally {

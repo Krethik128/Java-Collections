@@ -5,11 +5,11 @@ public class DivisionExample {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Enter numerator: ");
-            int a = scanner.nextInt();
+            int numerator = scanner.nextInt();
             System.out.print("Enter denominator: ");
-            int b = scanner.nextInt();
+            int denominator = scanner.nextInt();
 
-            int result = a / b;
+            int result = numerator / denominator;
             System.out.println("Result: " + result);
         } catch (ArithmeticException e) {
             System.out.println("Cannot divide by zero");

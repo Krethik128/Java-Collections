@@ -5,7 +5,7 @@ public class ComparingDifferentExceptions {
     public static void main(String[] args) throws Exception {
         int[] array={1,2,3,4};
         try { //One Try statement can be used for multiple catch statement
-            a(array);
+            callA(array);
         }
         catch (ArrayIndexOutOfBoundsException e){
             StackTraceElement[] st=e.getStackTrace();
@@ -32,14 +32,14 @@ public class ComparingDifferentExceptions {
 
 
     }
-    static void a(int a[]){
-        b(a);
+    static void callA(int a[]){
+        callB(a);
     }
-    static void b(int a[]){
-        c(a);
+    static void callB(int a[]){
+        callC(a);
     }
-    static void c(int a[]){
-        System.out.println(a[a.length]);
+    static void callC(int a[]){
+        System.out.println(a[a.length]); //accessing an out of bound index
     }
 
 }
