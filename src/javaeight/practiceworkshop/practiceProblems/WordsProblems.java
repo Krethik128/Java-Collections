@@ -1,6 +1,6 @@
 package javaeight.practiceworkshop.practiceProblems;
 
-import gevernova.workShopStreams.employees.*;
+import javaeight.practiceworkshop.employees.Employee;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,11 +87,6 @@ public class WordsProblems {
                 .map(emp->emp.getEmail().substring(emp.getEmail().indexOf("@")))
                 .distinct() //Using  map to map the object to string and then finding the "@" in string to get the substring
                 .forEach(str-> System.out.println(str+" "));
-
-
-
-
-
 
     }
 }

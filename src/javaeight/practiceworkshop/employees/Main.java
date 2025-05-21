@@ -3,6 +3,7 @@ package javaeight.practiceworkshop.employees;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,61 +22,84 @@ public class Main {
                 new Employee(110, "Judy", "Marketing", 27, 48000, "Delhi", Arrays.asList("judy@company.com"))
         ).toList();
 
-        // List all employees working in Pune, sorted by name
-        System.out.println("Employees in Pune (sorted):");
-        employeeList.stream()
-                .filter(emp -> emp.getCity().equalsIgnoreCase("Pune"))
-                .sorted((e1, e2) -> e1.getName().compareTo(e2.getName()))
-                .forEach(emp -> System.out.println(emp.getName()));
-
-        System.out.println("\nEmployees in IT department under 30:");
-        // Find all employees in IT department younger than 30
-        employeeList.stream()
-                .filter(emp -> emp.getDepartment().equalsIgnoreCase("IT"))
-                .filter(emp -> emp.getAge() < 30)
-                .forEach(emp -> System.out.println(emp.getName()));
-
-        //Create a list of all email addresses (flatten List<List<String>> using flatMap).
-        List<String> emails=employeeList.stream()
-                .flatMap(x->x.getEmails().stream())
+        // 1. List all employees working in Pune, sorted by name
+        System.out.println("Employees in Pune (sorted by name):");
+        List<Employee> puneEmployeesSorted = employeeList.stream()
+                .filter(emp -> "Pune".equalsIgnoreCase(emp.getCity()))
+                .sorted(Comparator.comparing(Employee::getName)) // Using method reference
                 .toList();
-        System.out.println(emails);
+        puneEmployeesSorted.forEach(emp -> System.out.println("- " + emp.getName()));
 
-        //Find if all employees are from the same city.
-        employeeList.stream()
-                .collect(Collectors.groupingBy(Employee::getCity))
-                .forEach((key,val)->{
-                    System.out.println("City -"+key);
-                    val.forEach(e-> System.out.println(e.getName()));
-                });
-        //Using EntrySet
-//        employeeList.stream()
-//                .collect(Collectors.groupingBy(Employee::getCity))
-//                .entrySet()
-//                .forEach(entry-> {
-//                            System.out.println("city- " + entry.getKey());
-//                            entry.getValue().forEach(e-> System.out.println(e.getName()));
-//                        });
+        // 2. Find all employees in IT department younger than 30
+        System.out.println("\nEmployees in IT department under 30:");
+        List<Employee> youngITEmployees = employeeList.stream()
+                .filter(emp -> "IT".equalsIgnoreCase(emp.getDepartment()) && emp.getAge() < 30) // Combined filter
+                .toList();
+        youngITEmployees.forEach(emp -> System.out.println("- " + emp.getName()));
 
+        // 3. Create a list of all email addresses
+        System.out.println("\nAll email addresses:");
+        List<String> allEmails = employeeList.stream()
+                .flatMap(emp -> emp.getEmails().stream())
+                .distinct() // Optional: if you want only unique emails
+                .collect(Collectors.toList()); // Java 8 way
+        System.out.println(allEmails);
 
+        // 4. Find if all employees are from the same city.
+        System.out.println("\nAre all employees from the same city?");
+            long distinctCitiesCount = employeeList.stream()
+                    .map(Employee::getCity)
+                    .distinct()
+                    .count();
+            boolean allSameCity = distinctCitiesCount <= 1;
+            System.out.println(allSameCity);
+            if (!allSameCity) {
+                System.out.println("Employees are from different cities. Grouping by city:");
+                Map<String, List<String>> employeesByCity = employeeList.stream()
+                        .collect(Collectors.groupingBy(Employee::getCity,
+                                Collectors.mapping(Employee::getName, Collectors.toList())));
+                employeesByCity.forEach((city, names) -> System.out.println(city + ": " + String.join(", ", names)));
+            } else {
+                System.out.println("All employees are from: " + employeeList.get(0).getCity());
+            }
 
-        //Skip first 2 highest-paid and get next 3.
+        // 5. Salary-based queries:
+        // 5a. Find the 3rd highest-paid employee
+        System.out.println("\n3rd highest-paid employee:");
         employeeList.stream()
                 .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
-                .skip(2)
+                .skip(2) // Skip the first two highest paid
                 .findFirst()
                 .ifPresentOrElse(
-                       employee ->  System.out.println("3rd highest salary is :"+employee.getName()+" with "+employee.getSalary()),
-                        ()-> System.out.println("No 3rd highest available from given data set")
+                        employee -> System.out.println(employee.getName() + " with salary: " + employee.getSalary()),
+                        () -> System.out.println("Not enough employees to determine the 3rd highest salary.")
                 );
 
-        employeeList.stream()
+        // 5b. Get the next 3 highest-paid employees after skipping the first 2 (i.e., 3rd, 4th, 5th highest paid)
+        System.out.println("\n3rd, 4th, and 5th highest-paid employees:");
+        List<Employee> thirdToFifthHighestPaid = employeeList.stream()
                 .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
-                .limit(3)
-                .forEach(emp-> System.out.println(emp.getName()));
+                .skip(2) // Skip top 2
+                .limit(3) // Take next 3
+                .toList();
 
-        //Group employees by city and find the average salary in each city.
-        System.out.println(employeeList.stream()
-                .collect(Collectors.groupingBy(Employee::getCity,Collectors.averagingDouble(Employee::getSalary))));
+        if (thirdToFifthHighestPaid.size() < 3 && employeeList.size() > 2 && !thirdToFifthHighestPaid.isEmpty()) { // Check if we got less than 3 but some
+            System.out.println("Found " + thirdToFifthHighestPaid.size() + " employee(s) after the top 2 (less than 3 requested):");
+            thirdToFifthHighestPaid.forEach(emp -> System.out.println("- " + emp.getName() + " with salary: " + emp.getSalary()));
+        } else if (thirdToFifthHighestPaid.isEmpty()){
+            System.out.println("Not enough employees to list the 3rd, 4th, and 5th highest paid.");
+        }
+        else {
+            thirdToFifthHighestPaid.forEach(emp -> System.out.println("- " + emp.getName() + " with salary: " + emp.getSalary()));
+        }
+
+        // 6. Group employees by city and find the average salary in each city.
+        System.out.println("\nAverage salary by city:");
+        Map<String, Double> avgSalaryByCity = employeeList.stream()
+                .collect(Collectors.groupingBy(Employee::getCity,
+                        Collectors.averagingDouble(Employee::getSalary)));
+        avgSalaryByCity.forEach((city, avgSalary) ->
+                System.out.println(city + ": " + String.format("%.2f", avgSalary))
+        );
     }
 }
