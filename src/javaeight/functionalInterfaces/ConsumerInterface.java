@@ -8,8 +8,8 @@ public class ConsumerInterface {
     public static void main(String[] args) {
        List<Integer> list= Arrays.asList(1,2,3,4);
 
-        Consumer<Integer> objone= x-> System.out.println(x);
-        objone.accept(5);
+        Consumer<Integer> objOne= System.out::println;
+        objOne.accept(5);
         Consumer<List<Integer>> printList=x->{
         for(int i:x){
             System.out.print(i+" ");
@@ -17,7 +17,7 @@ public class ConsumerInterface {
         };
         printList.accept(list);
 
-        list.forEach(x-> System.out.println(x));
+        list.forEach(System.out::println);
         list.forEach(System.out::println);
     }
 }

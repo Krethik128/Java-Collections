@@ -18,9 +18,9 @@ public class TerminalOps {
 
         //Counting occurrences of a character
         String string="Hello world Hello Hi ";
-        long val=string.chars().filter(x->x=='H').count();
+        long value=string.chars().filter(x->x=='H').count();
         long totalChars=string.chars().skip(' ').count();
-        System.out.println(val);
+        System.out.println(value);
         System.out.println(totalChars);
 
         //Stateful and Stateless operations

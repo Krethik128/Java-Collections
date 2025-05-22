@@ -36,9 +36,9 @@ public class IntermediateOps {
         System.out.println("Using sort Method using comparator");
             List<String> stringListTwo = Arrays.asList("listen", "banana", "silent", "apple", "enlist", "cat", "tac", "act");
             stringListTwo.sort((s1,s2)->{
-                String sortedS1 = sortCharacters(s1);
-                String sortedS2 = sortCharacters(s2);
-                return sortedS1.compareTo(sortedS2);
+                String sortedSOne = sortCharacters(s1);
+                String sortedSTwo = sortCharacters(s2);
+                return sortedSOne.compareTo(sortedSTwo);
             });
             // Print the sorted list
             for (String str : stringListTwo) {
